@@ -4,8 +4,8 @@
 
 Run [make.com](https://justine.lol/make/#download) in the same folder as this.
 
-- `.init.lua` is a example of how to handle Redbean's own zipfile as a 
-navigable folder structure.
+- `.init.lua` is a example of how to handle Redbean's own zipfile as a
+  navigable folder structure.
 
 - `ls.lua` is a naive listing of all `.zip` in the same `cwd` as your redbean
   instance;
@@ -16,7 +16,7 @@ navigable folder structure.
 
 ## colophon
 
-This is a proof of concept showing how to serve _zipfile_ content that is, or 
+This is a proof of concept showing how to serve _zipfile_ content that is, or
 is not embedded inside [redbean](https://redbean.dev/)'s
 [αcτµαlly pδrταblε εxεcµταblε](https://justine.lol/ape.html) zip file.
 
