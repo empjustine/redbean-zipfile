@@ -12,7 +12,7 @@ Write("<dl>\r\n")
 -- @see https://sqlite.org/src/file/ext/misc/fileio.c
 stmt =
 	db:prepare(
-		"SELECT name, mode, mtime FROM fsdir('.') WHERE name LIKE '%.zip'"
+		"SELECT name, mode, mtime FROM fsdir('.') WHERE name LIKE '%.zip' or name LIKE '%.cbz'"
 	)
 for row in stmt:nrows() do
 	Write('<dt>name</dt><dd><a href="/zipls.lua?zipfile=')
