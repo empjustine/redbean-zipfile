@@ -1,6 +1,6 @@
 -- @see https://redbean.dev/
 -- @see http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki
-sqlite3 = require"lsqlite3"
+sqlite3 = require("lsqlite3")
 db = sqlite3.open_memory()
 
 -- TODO: this is very vulnerable to relative path transversal
@@ -12,12 +12,16 @@ if string.find(zipfile, "%.%.") then
 end
 
 -- @see https://www.sqlite.org/zipfile.html
+
 stmt = db:prepare("SELECT name, mode, mtime, sz, method FROM zipfile(:zipfile)")
 stmt:bind_names{ zipfile = zipfile }
 SetHeader("Content-Type", "text/html; charset=utf-8")
-Write("<dl>\r\n")
+
+Write(
+	"</h2><table><thead><tr><th>name</th><th>mode</th><th>modified</th><th>size</th><th>method</th></tr></thead><tbody>\r\n"
+)
 for row in stmt:nrows() do
-	Write("<dt>name</dt><dd>")
+	Write("<tr><td>")
 	if row.sz > 0 then
 		Write('<a href="/zipcat.lua?zipfile=')
 		Write(EscapeHtml(zipfile))
@@ -29,15 +33,15 @@ for row in stmt:nrows() do
 	if row.sz > 0 then
 		Write("</a>")
 	end
-	Write("</dd>\r\n<dt>mode</dt><dd>")
+	Write("</td><td>")
 	Write(oct(row.mode))
-	Write("</dd>\r\n<dt>mtime</dt><dd>")
+	Write("</td><td>")
 	Write(FormatHttpDateTime(row.mtime))
-	Write("</dd>\r\n<dt>sz</dt><dd>")
+	Write("</td><td>")
 	Write(row.sz)
-	Write("</dd>\r\n<dt>method</dt><dd>")
+	Write("</td><td>")
 	Write(EscapeHtml(row.method))
-	Write("</dd>\r\n")
+	Write("</td></tr>\r\n")
 end
-Write("</dl>\r\n")
 stmt:finalize()
+Write("</tbody>\r\n</table>")

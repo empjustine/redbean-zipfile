@@ -29,7 +29,7 @@ local function redbean_zip_index()
 	Write("<h2>")
 	Write(EscapeHtml(GetPath()))
 	Write(
-		"</h2><table><thead><tr><th></th><th>name</th><th>modified</th><th>mode</th><th>size</th><th>comment</th></tr></thead><tbody>\n"
+		"</h2><table><thead><tr><th></th><th>name</th><th>modified</th><th>mode</th><th>size</th><th>comment</th></tr></thead><tbody>\r\n"
 	)
 	for i, current_zip_path in pairs(GetZipPaths(GetPath())) do
 		is_in_current_folder =
@@ -73,10 +73,10 @@ local function redbean_zip_index()
 			Write(GetAssetSize(current_zip_path))
 			Write("</td><td>")
 			Write(EscapeHtml(GetAssetComment(current_zip_path) or ""))
-			Write("</td></tr>\n")
+			Write("</td></tr>\r\n")
 		end
 	end
-	Write("</tbody>\n</table>")
+	Write("</tbody>\r\n</table>")
 	html_import(GetPath() .. ".footer.html")
 end
 

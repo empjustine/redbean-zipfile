@@ -1,6 +1,6 @@
 -- @see https://redbean.dev/
 -- @see http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki
-sqlite3 = require"lsqlite3"
+sqlite3 = require("lsqlite3")
 db = sqlite3.open_memory()
 
 -- WARNING!
@@ -8,22 +8,24 @@ db = sqlite3.open_memory()
 -- fsdir virtual table;
 -- just because it *can* be done, doesn't mean it's a good idea to do so!
 
-Write("<dl>\r\n")
+Write(
+	"<table><thead><tr><th>name</th><th>mode</th><th>modified</th></tr></thead><tbody>\r\n"
+)
 -- @see https://sqlite.org/src/file/ext/misc/fileio.c
 stmt =
 	db:prepare(
 		"SELECT name, mode, mtime FROM fsdir('.') WHERE name LIKE '%.zip' or name LIKE '%.cbz'"
 	)
 for row in stmt:nrows() do
-	Write('<dt>name</dt><dd><a href="/zipls.lua?zipfile=')
+	Write('<tr><td><a href="/zipls.lua?zipfile=')
 	Write(EscapeHtml(row.name))
 	Write('">')
 	Write(EscapeHtml(row.name))
-	Write("</a></dd>\r\n<dt>mode</dt><dd>")
+	Write("</a></td><td>")
 	Write(oct(row.mode))
-	Write("</dd>\r\n<dt>mtime</dt><dd>")
+	Write("</td><td>")
 	Write(FormatHttpDateTime(row.mtime))
-	Write("</dd>\r\n")
+	Write("</td></tr>\r\n")
 end
-Write("</dl>\r\n")
+Write("</tbody>\r\n</table>")
 stmt:finalize()
