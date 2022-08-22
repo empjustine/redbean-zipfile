@@ -1,11 +1,11 @@
 # redbean zipfile
 
-## run
+## build and run
 
-You can layer (by invoking `redbean` with the flag `-D ${this_folder}`) or
-embed (by using `zip redbean.com a-file.lua`) specific parts, or the entire
-project, to test the feasibility of `redbean-experiments` for your
-application.
+Run [make.com](https://justine.lol/make/#download) in the same folder as this.
+
+- `.init.lua` is a example of how to handle Redbean's own zipfile as a 
+navigable folder structure.
 
 - `ls.lua` is a naive listing of all `.zip` in the same `cwd` as your redbean
   instance;
@@ -16,8 +16,8 @@ application.
 
 ## colophon
 
-This is a proof of concept showing how to serve _zipfile_ content that is not
-embedded inside [redbean](https://redbean.dev/)'s
+This is a proof of concept showing how to serve _zipfile_ content that is, or 
+is not embedded inside [redbean](https://redbean.dev/)'s
 [αcτµαlly pδrταblε εxεcµταblε](https://justine.lol/ape.html) zip file.
 
 This of course means that the performance is awful (compared to the 10⁶ops
