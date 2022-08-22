@@ -4,12 +4,12 @@
 # │ as it is written in the following disclaimers:                   │
 # │   • http://unlicense.org/                                        │
 # ╚─────────────────────────────────────────────────────────────────*/
-.PHONY: all clean test
+.PHONY: all clean format test
 
 # Change redbean to whatever you want
 PROJECT=redbean
 REDBEAN=${PROJECT}.com
-REDBEAN_VERSION=2.0.16
+REDBEAN_VERSION=2.0.17
 REDBEAN_DL=https://redbean.dev/redbean-${REDBEAN_VERSION}.com
 
 ZIP=zip.com
@@ -20,6 +20,9 @@ UNZIP_DL=https://redbean.dev/unzip.com
 NPD=--no-print-directory
 
 all: add
+
+format:
+	npx -p prettier -p git+https://github.com/prettier/plugin-lua.git prettier . --write
 
 ${REDBEAN}.template:
 	curl -Rs ${REDBEAN_DL} -o $@ && \
@@ -38,8 +41,7 @@ add: ${ZIP} ${REDBEAN}
 
 unzip.com: ; curl -Rs ${ZIP_DL} -o $@
 ls: unzip.com
-	@unzip -vl ./${REDBEAN} | grep -v \
-		'usr/\|.symtab'
+	@unzip -vl ./${REDBEAN}
 
 log: ${PROJECT}.log
 	tail -f ${PROJECT}.log
