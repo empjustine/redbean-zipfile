@@ -20,9 +20,9 @@ for row in stmt:nrows() do
 	Write('">')
 	Write(EscapeHtml(row.name))
 	Write("</a></dd>\r\n<dt>mode</dt><dd>")
-	Write(EscapeHtml(row.mode))
+	Write(oct(row.mode))
 	Write("</dd>\r\n<dt>mtime</dt><dd>")
-	Write(EscapeHtml(row.mtime))
+	Write(FormatHttpDateTime(row.mtime))
 	Write("</dd>\r\n")
 end
 Write("</dl>\r\n")
