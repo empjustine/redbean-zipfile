@@ -1,6 +1,6 @@
 -- @see https://redbean.dev/
 -- @see http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki
-sqlite3 = require"lsqlite3"
+sqlite3 = require("lsqlite3")
 db = sqlite3.open_memory()
 
 -- TODO: declare in .init.lua instead
@@ -10,6 +10,9 @@ end
 
 -- TODO: declare in .init.lua instead
 local function naive_mime_by_extension(path)
+	if ends_with(path, ".jpg") or ends_with(path, ".jpeg") then
+		return "image/jpeg"
+	end
 	if ends_with(path, ".dashtoc") then
 		return "application/json; charset=utf-8"
 	end
