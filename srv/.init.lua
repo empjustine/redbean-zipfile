@@ -44,7 +44,11 @@ local function redbean_zip_index()
 			1
 		) ~= "."
 
-		if is_in_current_folder and is_not_hiddden then
+		-- @see https://man.archlinux.org/man/sys_stat.h.0p
+		-- S_IROTH
+		is_others_readable = GetAssetMode(current_zip_path) & 04 == 04
+
+		if is_in_current_folder and is_not_hiddden and is_others_readable then
 			Write("<tr><td>")
 			-- TODO: improve this later
 			-- this "thing" retrieves icons and encode them in data URI pngs if the extension matches

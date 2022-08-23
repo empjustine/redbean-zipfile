@@ -11,6 +11,21 @@ if string.find(zipfile, "%.%.") then
 	Write("unexpected input")
 end
 
+if string.sub(
+	-- in current dirname
+	path.basename(zipfile),
+	1,
+	1
+) == "." then
+	return Route("404", "404.html")
+end
+
+-- @see https://man.archlinux.org/man/sys_stat.h.0p
+-- S_IROTH
+if assert(unix.stat(zipfile)):mode() & 04 ~= 04 then
+	return Route("404", "404.html")
+end
+
 -- @see https://www.sqlite.org/zipfile.html
 
 stmt = db:prepare("SELECT name, mode, mtime, sz, method FROM zipfile(:zipfile)")
@@ -21,27 +36,29 @@ Write(
 	"</h2><table><thead><tr><th>name</th><th>mode</th><th>modified</th><th>size</th><th>method</th></tr></thead><tbody>\r\n"
 )
 for row in stmt:nrows() do
-	Write("<tr><td>")
-	if row.sz > 0 then
-		Write('<a href="/zipcat.lua?zipfile=')
-		Write(EscapeHtml(zipfile))
-		Write("&name=")
+	if row.mode & 04 == 04 then
+		Write("<tr><td>")
+		if row.sz > 0 then
+			Write('<a href="/zipcat.lua?zipfile=')
+			Write(EscapeHtml(zipfile))
+			Write("&name=")
+			Write(EscapeHtml(row.name))
+			Write('">')
+		end
 		Write(EscapeHtml(row.name))
-		Write('">')
+		if row.sz > 0 then
+			Write("</a>")
+		end
+		Write("</td><td>")
+		Write(oct(row.mode))
+		Write("</td><td>")
+		Write(FormatHttpDateTime(row.mtime))
+		Write("</td><td>")
+		Write(row.sz)
+		Write("</td><td>")
+		Write(EscapeHtml(row.method))
+		Write("</td></tr>\r\n")
 	end
-	Write(EscapeHtml(row.name))
-	if row.sz > 0 then
-		Write("</a>")
-	end
-	Write("</td><td>")
-	Write(oct(row.mode))
-	Write("</td><td>")
-	Write(FormatHttpDateTime(row.mtime))
-	Write("</td><td>")
-	Write(row.sz)
-	Write("</td><td>")
-	Write(EscapeHtml(row.method))
-	Write("</td></tr>\r\n")
 end
 stmt:finalize()
 Write("</tbody>\r\n</table>")

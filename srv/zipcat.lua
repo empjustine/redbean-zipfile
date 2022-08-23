@@ -39,6 +39,21 @@ if string.find(zipfile, "%.%.") then
 	Write("unexpected input")
 end
 
+if string.sub(
+	-- in current dirname
+	path.basename(zipfile),
+	1,
+	1
+) == "." then
+	return Route("404", "404.html")
+end
+
+-- @see https://man.archlinux.org/man/sys_stat.h.0p
+-- S_IROTH
+if assert(unix.stat(zipfile)):mode() & 04 ~= 04 then
+	return Route("404", "404.html")
+end
+
 name = GetParam("name")
 -- @see https://www.sqlite.org/zipfile.html
 stmt = db:prepare("SELECT data FROM zipfile(:zipfile) WHERE name = :name")
