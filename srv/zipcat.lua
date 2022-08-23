@@ -56,7 +56,10 @@ end
 
 name = GetParam("name")
 -- @see https://www.sqlite.org/zipfile.html
-stmt = db:prepare("SELECT data FROM zipfile(:zipfile) WHERE name = :name")
+stmt =
+	db:prepare(
+		"SELECT data FROM zipfile(:zipfile) WHERE name = :name and (mode = 0 or mode | 04 = 04)"
+	)
 stmt:bind_names{
 	zipfile = zipfile,
 	name = name,

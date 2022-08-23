@@ -36,7 +36,7 @@ Write(
 	"</h2><table><thead><tr><th>name</th><th>mode</th><th>modified</th><th>size</th><th>method</th></tr></thead><tbody>\r\n"
 )
 for row in stmt:nrows() do
-	if row.mode & 04 == 04 then
+	if row.mode == 0 or row.mode & 04 == 04 then
 		Write("<tr><td>")
 		if row.sz > 0 then
 			Write('<a href="/zipcat.lua?zipfile=')
