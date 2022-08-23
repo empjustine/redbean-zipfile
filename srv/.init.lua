@@ -11,7 +11,7 @@ local function data_uri(mime_type, payload)
 	Write("data:")
 	Write(EscapeHtml(mime_type))
 	Write(";base64,")
-	Write(EncodeBase64(zip_path))
+	Write(EncodeBase64(payload))
 end
 
 local function is_directory(zip_path)
