@@ -16,7 +16,7 @@ Write(
 -- S_IROTH
 stmt =
 	db:prepare(
-		"SELECT name, mode, mtime FROM fsdir('.') WHERE (name LIKE '%.zip' or name LIKE '%.cbz') and name NOT LIKE '%/.%' and (mode = 0 or mode & 04 = 04)"
+		"SELECT name, mode, mtime FROM fsdir('.') WHERE (name LIKE '%.zip' or name LIKE '%.cbz') and name NOT LIKE '%/.%' and (mode = 0 or mode & 04 = 04) ORDER BY name"
 	)
 for row in stmt:nrows() do
 	Write('<tr><td><a href="/zipls.lua?zipfile=')

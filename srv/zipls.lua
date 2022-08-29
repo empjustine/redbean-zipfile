@@ -18,7 +18,7 @@ end
 -- @see https://www.sqlite.org/zipfile.html
 stmt =
 	db:prepare(
-		"SELECT name, mode, mtime, sz, method FROM zipfile(:zipfile) WHERE (mode = 0 or mode & 04 = 04)"
+		"SELECT name, mode, mtime, sz, method FROM zipfile(:zipfile) WHERE (mode = 0 or mode & 04 = 04) ORDER BY name"
 	)
 stmt:bind_names{ zipfile = zipfile }
 SetHeader("Content-Type", "text/html; charset=utf-8")
