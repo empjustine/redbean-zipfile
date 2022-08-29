@@ -24,7 +24,7 @@ stmt:bind_names{ zipfile = zipfile }
 SetHeader("Content-Type", "text/html; charset=utf-8")
 
 Write(
-	"</h2><table><thead><tr><th>name</th><th>mode</th><th>modified</th><th>size</th><th>method</th></tr></thead><tbody>\r\n"
+	"<table><thead><tr><th>name</th><th>mode</th><th>modified</th><th>size</th><th>method</th></tr></thead><tbody>\r\n"
 )
 for row in stmt:nrows() do
 	Write("<tr><td>")
