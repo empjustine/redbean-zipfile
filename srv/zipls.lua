@@ -1,3 +1,7 @@
+local function ends_with(str, ending)
+	return ending == "" or str:sub(-#ending) == ending
+end
+
 -- @see https://redbean.dev/
 -- @see http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki
 sqlite3 = require("lsqlite3")
@@ -34,6 +38,16 @@ for row in stmt:nrows() do
 		Write("&name=")
 		Write(EscapeHtml(row.name))
 		Write('">')
+		if row.sz < 10000000 and (ends_with(row.name, ".jpg") or ends_with(
+			row.name,
+			".jpeg"
+		)) then
+			Write('<img width="64" height="64" src="/zipcat.lua?zipfile=')
+			Write(EscapeHtml(zipfile))
+			Write("&name=")
+			Write(EscapeHtml(row.name))
+			Write('" loading="lazy">')
+		end
 	end
 	Write(EscapeHtml(row.name))
 	if row.sz > 0 then
