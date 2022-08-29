@@ -7,13 +7,6 @@ local function html_import(zip_path)
 	end
 end
 
-local function data_uri(mime_type, payload)
-	Write("data:")
-	Write(EscapeHtml(mime_type))
-	Write(";base64,")
-	Write(EncodeBase64(payload))
-end
-
 local function is_directory(zip_path)
 	if zip_path == "/" then
 		return true
@@ -56,8 +49,8 @@ local function redbean_zip_index()
 				path.basename(current_zip_path):match("^.+(%..+)$") or ""
 			image_location = "/.extension_icons/" .. extension .. ".png"
 			if GetAssetSize(image_location) then
-				Write('<img src="')
-				data_uri("image/png", LoadAsset(image_location))
+				Write('<img src="data:image/png;base64,')
+				Write(EncodeBase64(LoadAsset(image_location)))
 				Write('" />')
 			end
 			Write('</td><td><a href="')

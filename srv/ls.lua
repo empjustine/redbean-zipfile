@@ -12,33 +12,22 @@ Write(
 	"<table><thead><tr><th>name</th><th>mode</th><th>modified</th></tr></thead><tbody>\r\n"
 )
 -- @see https://sqlite.org/src/file/ext/misc/fileio.c
+-- @see https://man.archlinux.org/man/sys_stat.h.0p
+-- S_IROTH
 stmt =
 	db:prepare(
-		"SELECT name, mode, mtime FROM fsdir('.') WHERE name LIKE '%.zip' or name LIKE '%.cbz'"
+		"SELECT name, mode, mtime FROM fsdir('.') WHERE (name LIKE '%.zip' or name LIKE '%.cbz') and name NOT LIKE '%/.%' and (mode = 0 or mode & 04 = 04)"
 	)
 for row in stmt:nrows() do
-	is_not_hiddden = string.sub(
-		-- in current dirname
-		path.basename(row.name),
-		1,
-		1
-	) ~= "."
-
-	-- @see https://man.archlinux.org/man/sys_stat.h.0p
-	-- S_IROTH
-	is_others_readable = row.mode & 04 == 04
-
-	if is_not_hiddden and is_others_readable then
-		Write('<tr><td><a href="/zipls.lua?zipfile=')
-		Write(EscapeHtml(row.name))
-		Write('">')
-		Write(EscapeHtml(row.name))
-		Write("</a></td><td>")
-		Write(oct(row.mode))
-		Write("</td><td>")
-		Write(FormatHttpDateTime(row.mtime))
-		Write("</td></tr>\r\n")
-	end
+	Write('<tr><td><a href="/zipls.lua?zipfile=')
+	Write(EscapeHtml(row.name))
+	Write('">')
+	Write(EscapeHtml(row.name))
+	Write("</a></td><td>")
+	Write(oct(row.mode))
+	Write("</td><td>")
+	Write(FormatHttpDateTime(row.mtime))
+	Write("</td></tr>\r\n")
 end
 Write("</tbody>\r\n</table>")
 stmt:finalize()

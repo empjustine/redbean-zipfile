@@ -32,33 +32,28 @@ local function naive_mime_by_extension(path)
 end
 
 -- TODO: this is very vulnerable to relative path transversal
+-- @see https://man.archlinux.org/man/sys_stat.h.0p
+-- S_IROTH
 zipfile = GetParam("zipfile")
-if string.find(zipfile, "%.%.") then
+if string.find(zipfile, "%.%.") or string.find(zipfile, "/%.") or assert(
+	unix.stat(zipfile)
+):mode() & 04 ~= 04 then
 	SetStatus(400)
 	SetHeader("Content-Type", "text/plain; charset=utf-8")
 	Write("unexpected input")
 end
 
-if string.sub(
-	-- in current dirname
-	path.basename(zipfile),
-	1,
-	1
-) == "." then
-	return Route("404", "404.html")
-end
-
--- @see https://man.archlinux.org/man/sys_stat.h.0p
--- S_IROTH
-if assert(unix.stat(zipfile)):mode() & 04 ~= 04 then
-	return Route("404", "404.html")
-end
-
 name = GetParam("name")
+if string.find(name, "/%.") then
+	SetStatus(400)
+	SetHeader("Content-Type", "text/plain; charset=utf-8")
+	Write("unexpected input")
+end
+
 -- @see https://www.sqlite.org/zipfile.html
 stmt =
 	db:prepare(
-		"SELECT data FROM zipfile(:zipfile) WHERE name = :name and (mode = 0 or mode | 04 = 04)"
+		"SELECT data FROM zipfile(:zipfile) WHERE name = :name and (mode = 0 or mode & 04 = 04)"
 	)
 stmt:bind_names{
 	zipfile = zipfile,
