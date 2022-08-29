@@ -1,14 +1,14 @@
-# redbean zipfile
+# redbean-zipfile
 
 ## build and run
 
-Run [make.com](https://justine.lol/make/#download) in the same folder as this.
+Run `make` in the project root directory.
 
-- `.init.lua` is a example of how to handle Redbean's own zipfile as a
+- `.init.lua` is a example of how to handle Redbean's embedded zipfile as a
   navigable folder structure.
 
-- `ls.lua` is a naive listing of all `.zip` in the same `cwd` as your redbean
-  instance;
+- `ls.lua` is a naive listing of all `.zip`/`.cbz` in the same current working
+  directory as your project;
 
 - `zipls.lua` is a naive listing of all contents of a specific zipfile "whole";
 
