@@ -30,12 +30,11 @@ local function redbean_zip_index()
 				"%//",
 				"/"
 			) == GetPath()
-		is_not_hiddden = string.sub(
-			-- in current dirname
-			path.basename(current_zip_path),
-			1,
-			1
-		) ~= "."
+		is_not_hiddden =
+			string.find(current_zip_path, "%.%.") or string.find(
+				current_zip_path,
+				"/%."
+			)
 
 		-- @see https://man.archlinux.org/man/sys_stat.h.0p
 		-- S_IROTH
