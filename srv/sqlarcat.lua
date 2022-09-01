@@ -46,13 +46,11 @@ local stmt =
 		"SELECT data FROM sqlar WHERE name = :name and (mode = 0 or mode & 04 = 04) LIMIT 1"
 	)
 stmt:bind_names{ name = name }
-local rows = stmt:nrows()
-if #rows == 0 then
-	ServeError(404)
-else
+for row in stmt:nrows() do
 	SetHeader("Content-Type", naive_mime_by_extension(name))
-	for row in rows do
-		Write(row.data)
-	end
+	Write(row.data)
+	stmt:finalize()
+	return
 end
+ServeError(404)
 stmt:finalize()

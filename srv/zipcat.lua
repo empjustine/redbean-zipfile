@@ -42,19 +42,17 @@ local sqlite3 = require("lsqlite3")
 local db = sqlite3.open_memory()
 local stmt =
 	db:prepare(
-		"SELECT data FROM zipfile(:zipfile) WHERE name = :name and (mode = 0 or mode & 04 = 04)"
+		"SELECT data FROM zipfile(:zipfile) WHERE name = :name and (mode = 0 or mode & 04 = 04) LIMIT 1"
 	)
 stmt:bind_names{
 	zipfile = zipfile,
 	name = name,
 }
-local rows = stmt:nrows()
-if #rows == 0 then
-	ServeError(404)
-else
+for row in stmt:nrows() do
 	SetHeader("Content-Type", naive_mime_by_extension(name))
-	for row in rows do
-		Write(row.data)
-	end
+	Write(row.data)
+	stmt:finalize()
+	return
 end
+ServeError(404)
 stmt:finalize()
