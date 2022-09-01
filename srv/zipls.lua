@@ -2,34 +2,52 @@ local function ends_with(str, ending)
 	return ending == "" or str:sub(-#ending) == ending
 end
 
--- @see https://redbean.dev/
--- @see http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki
-local sqlite3 = require("lsqlite3")
-
--- TODO: this is very vulnerable to relative path transversal
--- @see https://man.archlinux.org/man/sys_stat.h.0p
--- S_IROTH
-local zipfile = GetParam("zipfile")
-if string.find(zipfile, "%.%.") or string.find(zipfile, "/%.") or assert(
-	unix.stat(zipfile)
-):mode() & 04 ~= 04 then
-	SetStatus(400)
-	SetHeader("Content-Type", "text/plain; charset=utf-8")
-	Write("unexpected input")
+local function array_index_of(tab, val)
+	for index, value in ipairs(tab) do
+		if value == val then
+			return index
+		end
+	end
 end
 
-local db = sqlite3.open(database, sqlite3.SQLITE_OPEN_READONLY)
+local function naive_mime_by_extension(path)
+	if ends_with(path, ".jpg") or ends_with(path, ".jpeg") then
+		return "image/jpeg"
+	end
+	if ends_with(path, ".dashtoc") then
+		return "application/json; charset=utf-8"
+	end
+	if ends_with(path, ".xml") or ends_with(path, ".plist") then
+		return "application/xml; charset=utf-8"
+	end
+	if ends_with(path, ".htm") or ends_with(path, ".html") then
+		return "text/html; charset=utf-8"
+	end
+	if ends_with(path, ".css") then
+		return "text/css; charset=utf-8"
+	end
+	if ends_with(path, ".js") then
+		return "text/javascript; charset=utf-8"
+	end
+	return "text/plain; charset=utf-8"
+end
 
+-- @see http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki
 -- @see https://www.sqlite.org/zipfile.html
+local zipfile = GetParam("zipfile")
+if array_index_of(arg, zipfile) == nil then
+	return ServeError(403, "unauthorized zipfile")
+end
+local sqlite3 = require("lsqlite3")
+local db = sqlite3.open_memory()
 local stmt =
 	db:prepare(
-		"SELECT name, mode, mtime, sz, method FROM zipfile(:zipfile) WHERE (mode = 0 or mode & 04 = 04) ORDER BY name"
+		"SELECT name, mode, mtime, sz FROM zipfile(:zipfile) WHERE (mode = 0 or mode & 04 = 04) ORDER BY name"
 	)
 stmt:bind_names{ zipfile = zipfile }
 SetHeader("Content-Type", "text/html; charset=utf-8")
-
 Write(
-	"<table><thead><tr><th>name</th><th>mode</th><th>modified</th><th>size</th><th>method</th></tr></thead><tbody>\r\n"
+	"<table><thead><tr><th>name</th><th>mode</th><th>modified</th><th>size</th></tr></thead><tbody>\r\n"
 )
 for row in stmt:nrows() do
 	Write("<tr><td>")
@@ -60,8 +78,6 @@ for row in stmt:nrows() do
 	Write(FormatHttpDateTime(row.mtime))
 	Write("</td><td>")
 	Write(row.sz)
-	Write("</td><td>")
-	Write(EscapeHtml(row.method))
 	Write("</td></tr>\r\n")
 end
 stmt:finalize()

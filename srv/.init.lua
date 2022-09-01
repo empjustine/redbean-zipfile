@@ -1,3 +1,5 @@
+-- @see https://redbean.dev/
+
 local function zip_html_import(zip_path)
 	local size = GetAssetSize(zip_path)
 	if size then
@@ -26,10 +28,10 @@ local function on_zip_directory_http_request()
 	Write(
 		"</h2><table><thead><tr><th></th><th>name</th><th>modified</th><th>mode</th><th>size</th><th>comment</th></tr></thead><tbody>\r\n"
 	)
-	for i, current_zip_path in pairs(GetZipPaths(GetPath())) do
-		local is_in_current_folder = starts_with(GetPath(), current_zip_path)
+	for i, current_zip_path in pairs(GetZipPaths()) do
+		local is_in_current_folder = starts_with(current_zip_path, GetPath())
 		local is_inside_nested_folder =
-			not string.find(current_zip_path, "/", #GetPath())
+			string.find(current_zip_path, "/.", #GetPath() + 1)
 		local is_hiddden = string.find(current_zip_path, "/%.")
 
 		-- @see https://man.archlinux.org/man/sys_stat.h.0p

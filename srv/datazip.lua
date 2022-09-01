@@ -1,5 +1,3 @@
-local sqlite3 = require("lsqlite3")
-
 local function array_index_of(tab, val)
 	for index, value in ipairs(tab) do
 		if value == val then
@@ -11,7 +9,7 @@ end
 if array_index_of(arg, "serve") == nil then
 	return ServeError(
 		403,
-		"not setup for datazip, start redbean.com with serve parameter"
+		'"' .. arg[-1] .. '" missing "serve" command line parameter'
 	)
 end
 
@@ -19,6 +17,7 @@ local database = GetParam("database")
 if array_index_of(arg, database) == nil then
 	return ServeError(403, "unauthorized database")
 end
+local sqlite3 = require("lsqlite3")
 local db = sqlite3.open(database, sqlite3.SQLITE_OPEN_READONLY)
 
 if array_index_of(arg, "--cors") then

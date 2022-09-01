@@ -33,21 +33,19 @@ local function naive_mime_by_extension(path)
 end
 
 -- @see http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki
--- @see https://www.sqlite.org/zipfile.html
-local zipfile = GetParam("zipfile")
-if array_index_of(arg, zipfile) == nil then
-	return ServeError(403, "unauthorized zipfile")
+-- @see https://sqlite.org/sqlar
+local sqlar = GetParam("sqlar")
+local name = GetParam("name")
+if array_index_of(arg, sqlar) == nil then
+	return ServeError(403, "unauthorized sqlar")
 end
 local sqlite3 = require("lsqlite3")
-local db = sqlite3.open_memory()
+local db = sqlite3.open(sqlar, sqlite3.SQLITE_OPEN_READONLY)
 local stmt =
 	db:prepare(
-		"SELECT data FROM zipfile(:zipfile) WHERE name = :name and (mode = 0 or mode & 04 = 04)"
+		"SELECT data FROM sqlar WHERE name = :name and (mode = 0 or mode & 04 = 04) LIMIT 1"
 	)
-stmt:bind_names{
-	zipfile = zipfile,
-	name = name,
-}
+stmt:bind_names{ name = name }
 local rows = stmt:nrows()
 if #rows == 0 then
 	ServeError(404)

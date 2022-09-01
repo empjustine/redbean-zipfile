@@ -24,9 +24,11 @@ Run `make` in the project root directory.
 
 - `zipls.lua` is a naive listing of all contents of a specific zipfile "whole";
 
+- `sqlarls.lua` is a naive listing of all contents of a specific "SQLite Archive" "whole";
 
 - `zipcat.lua` is a naive viewer of the contents of a specific zipfile file;
 
+- `sqlarls.lua` is a naive viewer of the contents of a specific "SQLite Archive" file;
 
 - `datazip.lua` is a naive reimplementation of
   [https://datasette.io/](https://datasette.io/) .
