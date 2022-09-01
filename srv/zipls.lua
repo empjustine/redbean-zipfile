@@ -53,18 +53,18 @@ for row in stmt:nrows() do
 	Write("<tr><td>")
 	if row.sz > 0 then
 		Write('<a href="/zipcat.lua?zipfile=')
-		Write(EscapeHtml(EscapeSegment(zipfile)))
+		Write(EscapeParam(zipfile))
 		Write("&name=")
-		Write(EscapeHtml(row.name))
+		Write(EscapeParam(row.name))
 		Write('">')
 		if row.sz < 10000000 and (ends_with(row.name, ".jpg") or ends_with(
 			row.name,
 			".jpeg"
 		)) then
 			Write('<img width="64" height="64" src="/zipcat.lua?zipfile=')
-			Write(EscapeHtml(EscapeSegment(zipfile)))
+			Write(EscapeParam(zipfile))
 			Write("&name=")
-			Write(EscapeHtml(row.name))
+			Write(EscapeParam(row.name))
 			Write('" loading="lazy">')
 		end
 	end

@@ -12,9 +12,9 @@ if #arg > 0 then
 			Write("<tr><td>")
 			Write(EscapeHtml(row))
 			Write(' - <a href="/zipls.lua?zipfile=')
-			Write(EscapeHtml(EscapeSegment(row)))
+			Write(EscapeParam(row))
 			Write('">as zip</a> - <a href="/sqlarls.lua?sqlar=')
-			Write(EscapeHtml(EscapeSegment(row)))
+			Write(EscapeParam(row))
 			Write('">as sqlar</a>')
 			Write("</td><td>?</td><td>?</td></tr>\r\n")
 		end
@@ -28,7 +28,7 @@ else
 		)
 	for row in stmt:nrows() do
 		Write('<tr><td><a href="/zipls.lua?zipfile=')
-		Write(EscapeSegment(row.name))
+		Write(EscapeParam(row.name))
 		Write('">')
 		Write(EscapeHtml(row.name))
 		Write("</a></td><td>")

@@ -57,7 +57,7 @@ local function on_zip_directory_http_request()
 				Write('" />')
 			end
 			Write('</td><td><a href="')
-			Write(EscapePath(current_zip_path))
+			Write(EscapeParam(current_zip_path))
 			Write('">')
 			Write(EscapeHtml(path.basename(current_zip_path)))
 			if is_zip_directory(current_zip_path) then
@@ -90,5 +90,5 @@ end
 
 if #arg == 1 then
 	ProgramPort(0) -- random listening port
-	LaunchBrowser("/zipls.lua?zipfile=" .. EscapeSegment(arg[1]))
+	LaunchBrowser("/zipls.lua?zipfile=" .. EscapeParam(arg[1]))
 end
