@@ -4,13 +4,12 @@ end
 
 -- @see https://redbean.dev/
 -- @see http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki
-sqlite3 = require("lsqlite3")
-db = sqlite3.open_memory()
+local sqlite3 = require("lsqlite3")
 
 -- TODO: this is very vulnerable to relative path transversal
 -- @see https://man.archlinux.org/man/sys_stat.h.0p
 -- S_IROTH
-zipfile = GetParam("zipfile")
+local zipfile = GetParam("zipfile")
 if string.find(zipfile, "%.%.") or string.find(zipfile, "/%.") or assert(
 	unix.stat(zipfile)
 ):mode() & 04 ~= 04 then
@@ -19,8 +18,10 @@ if string.find(zipfile, "%.%.") or string.find(zipfile, "/%.") or assert(
 	Write("unexpected input")
 end
 
+local db = sqlite3.open(database, sqlite3.SQLITE_OPEN_READONLY)
+
 -- @see https://www.sqlite.org/zipfile.html
-stmt =
+local stmt =
 	db:prepare(
 		"SELECT name, mode, mtime, sz, method FROM zipfile(:zipfile) WHERE (mode = 0 or mode & 04 = 04) ORDER BY name"
 	)
@@ -34,7 +35,7 @@ for row in stmt:nrows() do
 	Write("<tr><td>")
 	if row.sz > 0 then
 		Write('<a href="/zipcat.lua?zipfile=')
-		Write(EscapeHtml(zipfile))
+		Write(EscapeHtml(EscapeSegment(zipfile)))
 		Write("&name=")
 		Write(EscapeHtml(row.name))
 		Write('">')
@@ -43,7 +44,7 @@ for row in stmt:nrows() do
 			".jpeg"
 		)) then
 			Write('<img width="64" height="64" src="/zipcat.lua?zipfile=')
-			Write(EscapeHtml(zipfile))
+			Write(EscapeHtml(EscapeSegment(zipfile)))
 			Write("&name=")
 			Write(EscapeHtml(row.name))
 			Write('" loading="lazy">')

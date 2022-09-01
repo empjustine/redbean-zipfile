@@ -1,7 +1,7 @@
 -- @see https://redbean.dev/
 -- @see http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki
-sqlite3 = require("lsqlite3")
-db = sqlite3.open_memory()
+local sqlite3 = require("lsqlite3")
+local db = sqlite3.open_memory()
 
 -- TODO: declare in .init.lua instead
 local function ends_with(str, ending)
@@ -34,7 +34,7 @@ end
 -- TODO: this is very vulnerable to relative path transversal
 -- @see https://man.archlinux.org/man/sys_stat.h.0p
 -- S_IROTH
-zipfile = GetParam("zipfile")
+local zipfile = GetParam("zipfile")
 if string.find(zipfile, "%.%.") or string.find(zipfile, "/%.") or assert(
 	unix.stat(zipfile)
 ):mode() & 04 ~= 04 then
@@ -43,7 +43,7 @@ if string.find(zipfile, "%.%.") or string.find(zipfile, "/%.") or assert(
 	Write("unexpected input")
 end
 
-name = GetParam("name")
+local name = GetParam("name")
 if string.find(name, "/%.") then
 	SetStatus(400)
 	SetHeader("Content-Type", "text/plain; charset=utf-8")
@@ -51,7 +51,7 @@ if string.find(name, "/%.") then
 end
 
 -- @see https://www.sqlite.org/zipfile.html
-stmt =
+local stmt =
 	db:prepare(
 		"SELECT data FROM zipfile(:zipfile) WHERE name = :name and (mode = 0 or mode & 04 = 04)"
 	)
