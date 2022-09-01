@@ -43,7 +43,7 @@ local sqlite3 = require("lsqlite3")
 local db = sqlite3.open(sqlar, sqlite3.SQLITE_OPEN_READONLY)
 local stmt =
 	db:prepare(
-		"SELECT data FROM sqlar WHERE name = :name and (mode = 0 or mode & 04 = 04) LIMIT 1"
+		"SELECT data FROM sqlar WHERE name = :name and (mode & 04 = 04 or (mode = 0 and sz > 0)) LIMIT 1"
 	)
 stmt:bind_names{ name = name }
 for row in stmt:nrows() do

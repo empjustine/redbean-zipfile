@@ -35,6 +35,7 @@ end
 -- @see http://lua.sqlite.org/index.cgi/doc/tip/doc/lsqlite3.wiki
 -- @see https://www.sqlite.org/zipfile.html
 local zipfile = GetParam("zipfile")
+local name = GetParam("name")
 if array_index_of(arg, zipfile) == nil then
 	return ServeError(403, "unauthorized zipfile")
 end
@@ -42,7 +43,7 @@ local sqlite3 = require("lsqlite3")
 local db = sqlite3.open_memory()
 local stmt =
 	db:prepare(
-		"SELECT data FROM zipfile(:zipfile) WHERE name = :name and (mode = 0 or mode & 04 = 04) LIMIT 1"
+		"SELECT data FROM zipfile(:zipfile) WHERE name = :name and (mode & 04 = 04 or (mode = 0 and sz > 0)) LIMIT 1"
 	)
 stmt:bind_names{
 	zipfile = zipfile,
